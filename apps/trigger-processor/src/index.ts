@@ -15,11 +15,11 @@ async function main() {
     });
 
 
-    producer.send({
+    await producer.send({
       topic: "mate-events",
       messages: pendingRows.map((row) => {
         return {
-          value: row.mateRunId
+          value: "test",
         };
       })
     });

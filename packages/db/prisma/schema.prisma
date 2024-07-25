@@ -15,9 +15,9 @@ datasource db {
 
 model User {
   id        String   @id @default(cuid())
-  name      String
+  name      String?
   email     String   @unique
-  password  String
+  password  String?
   mates     Mate[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -45,13 +45,14 @@ model Trigger {
 }
 
 model Action {
-  id        String          @id @default(cuid())
-  mateId    String
-  actionId  String
-  mate      Mate            @relation(fields: [mateId], references: [id])
-  type      AvailableAction @relation(fields: [actionId], references: [id])
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
+  id           String          @id @default(cuid())
+  mateId       String
+  actionId     String
+  mate         Mate            @relation(fields: [mateId], references: [id])
+  type         AvailableAction @relation(fields: [actionId], references: [id])
+  sortingOrder Int             @default(0)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
 }
 
 model AvailableTrigger {
