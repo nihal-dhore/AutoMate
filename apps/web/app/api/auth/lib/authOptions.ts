@@ -1,23 +1,22 @@
 
-import { CredentialsSignin, NextAuthConfig, Session } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+import { NextAuthConfig, Session } from "next-auth";
+import Google from "next-auth/providers/google";
 import prisma from "@repo/db/client";
 import { JWT } from "next-auth/jwt";
-import CredentialsProvider from "next-auth/providers/credentials";
+import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { signinSchema } from "@repo/schemas/signin";
 
 export const authOptions: NextAuthConfig = {
   providers: [
-    GoogleProvider({
+    Google({
       clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
     }),
-    CredentialsProvider({
-      name: "Email login",
+    Credentials({
       credentials: {
-        email: { label: "Email", type: "email", required: true },
-        password: { label: "Password", type: "password" }
+        email: { type: "email" },
+        password: { type: "password" }
       },
       async authorize(credentials) {
 
@@ -28,40 +27,46 @@ export const authOptions: NextAuthConfig = {
         const validation = signinSchema.safeParse(credentials);
 
         if (!validation.success) {
-          return null;
+          throw new Error(validation.error.issues.map((issue) => issue.message).toString());
         }
 
-        const hashedPassword = await bcrypt.hash(credentials.password as string, 10);
-
-
         try {
-          let user;
-          user = await prisma.user.findUnique({
+          const hashedPassword = await bcrypt.hash(credentials.password as string, 10);
+
+
+          const user = await prisma.user.findUnique({
             where: {
               email: credentials.email as string,
-              password: hashedPassword
             }
           });
 
           if (!user) {
-            user = await prisma.user.create({
+            const newUser = await prisma.user.create({
               data: {
                 email: credentials.email as string,
                 password: hashedPassword
               }
             });
+            return newUser;
           }
+
+          const passwordValidation = await bcrypt.compare(hashedPassword, user?.password!);
+
+          if (!passwordValidation) {
+            throw new Error("Invalid password");
+          }
+
           return user;
         } catch (error) {
           console.log(error);
-          return null;
+          // throw new Error("Signin error");
+          throw error;
         }
       }
     })
   ],
-  secret: process.env.AUTH_SECRET,
   pages: {
-    signIn: "/signin"
+    signIn: "/signin",
   },
   session: {
     strategy: "jwt",
