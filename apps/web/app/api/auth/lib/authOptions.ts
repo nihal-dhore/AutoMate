@@ -1,10 +1,10 @@
 
-import { NextAuthConfig, Session } from "next-auth";
+import { AuthError, NextAuthConfig, Session } from "next-auth";
 import Google from "next-auth/providers/google";
 import prisma from "@repo/db/client";
 import { JWT } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { signinSchema } from "@repo/schemas/signin";
 
 export const authOptions: NextAuthConfig = {
@@ -12,6 +12,11 @@ export const authOptions: NextAuthConfig = {
     Google({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent",
+        }
+      }
     }),
     Credentials({
       credentials: {
@@ -50,21 +55,26 @@ export const authOptions: NextAuthConfig = {
             return newUser;
           }
 
-          const passwordValidation = await bcrypt.compare(hashedPassword, user?.password!);
+          if (!user.password) throw new Error("User does not have a password");
+
+          const passwordValidation = await bcrypt.compare(credentials.password as string, user.password);
 
           if (!passwordValidation) {
-            throw new Error("Invalid password");
+            //console.log("Invalid password");
+            throw new AuthError("Invalid password");
           }
 
           return user;
         } catch (error) {
           console.log(error);
+
           // throw new Error("Signin error");
           throw error;
         }
       }
     })
   ],
+  secret: process.env.AUTH_SECRET,
   pages: {
     signIn: "/signin",
   },

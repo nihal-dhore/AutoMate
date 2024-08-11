@@ -1,6 +1,5 @@
 "use server";
-
-import { signIn, signOut } from "auth";
+import { signIn, signOut } from "@/auth";
 
 interface signinActionProps {
   email: string;
@@ -8,18 +7,16 @@ interface signinActionProps {
 }
 
 export async function signinAction({ email, password }: signinActionProps) {
-  try {
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirectTo: "/",
-    });
+  const res = await signIn("credentials", {
+    email,
+    password,
+    redirectTo: "/",
+  });
 
-    return res;
+  console.log(res);
+  
 
-  } catch (error) {
-    throw error;
-  }
+  return res;
 }
 
 export async function signOutAction() {
@@ -27,13 +24,8 @@ export async function signOutAction() {
 }
 
 export async function signinWithGoogleAction() {
-  try {
-    const res = await signIn("google", {
-      redirectTo: "/",
-    });
-
-    return res;
-  } catch (error) {
-    throw error
-  }
+  const res = await signIn("google", {
+    redirectTo: "/",
+  });
+  return res;
 }

@@ -1,4 +1,4 @@
 import NextAuth from "next-auth";
-import { authOptions } from "./app/api/auth/lib/authOptions";
+import { authOptions } from "@/app/api/auth/lib/authOptions";
 
-export const { handlers: { GET, POST }, signIn, signOut } = NextAuth(authOptions);
+export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth(authOptions);
