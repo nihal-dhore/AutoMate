@@ -2,7 +2,7 @@
   "name": "@repo/schemas",
   "version": "1.0.0",
   "exports": {
-    "./signin": "./src/signin-schema.ts",
+    "./credentials": "./src/credentials-schema.ts",
     "./mate": "./src/mate-schema.ts"
   },
   "keywords": [],

@@ -1,4 +1,4 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from 'tailwindcss';
 
 export default {
   content: [
@@ -7,7 +7,17 @@ export default {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: "#ff4f00",
+        background: "#f7f5f2",
+        foreground: "#fffdf9",
+        destructive: "#ce482d"
+      },
+      fontFamily: {
+        sans: ['var(--font-inter)'],
+      },
+    },
   },
   plugins: [],
-} satisfies Config
+} satisfies Config;

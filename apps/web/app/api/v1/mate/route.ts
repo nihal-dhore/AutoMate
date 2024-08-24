@@ -89,12 +89,22 @@ export async function GET(req: NextRequest, res: NextResponse) {
         },
       }
     });
+
+    if (mates.length === 0) {
+      return NextResponse.json({
+        message: "No Mates Found"
+      }, {
+        status: 200
+      });
+    }
+
     return NextResponse.json({
       mates,
       message: "Your Mates"
     }, {
       status: 200
     });
+    
   } catch (error) {
     return NextResponse.json({
       error: "Internal Server Error"

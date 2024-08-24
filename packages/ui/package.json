@@ -21,6 +21,8 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@radix-ui/react-dropdown-menu": "^2.1.1",
+    "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-toast": "^1.2.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -35,8 +37,8 @@
     "./tailwind.config": "./tailwind.config.ts",
     "./lib/*": "./src/lib/*.ts",
     "./components/*": [
-      "./src/components/*.tsx",
-      "./src/components/*.ts"
+      "./src/components/ui/*.tsx",
+      "./src/components/ui/*.ts"
     ]
   }
 }

@@ -2,12 +2,14 @@ import { auth } from "@/auth";
 import prisma from "@repo/db/client";
 import { NextRequest, NextResponse } from "next/server";
 
-export default async function GET(req: NextRequest, { params }: {
+export async function GET(req: NextRequest, { params }: {
   params: {
-    slug: string;
+    mateId: string;
   };
-}) {
-  const mateId = params.slug;
+}) {  
+  const mateId = params.mateId;
+  console.log(mateId);
+
 
   if (!mateId) {
     return NextResponse.json({

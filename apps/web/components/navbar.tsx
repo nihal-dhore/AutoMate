@@ -1,15 +1,24 @@
 "use client";
-import { signOutAction } from "app/actions/signinAction";
+
+import { Button } from "@repo/ui/components/button";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
+  const router = useRouter();
+
   return (
-    <div className="flex justify-end py-2 px-5 fixed top-0 z-50 w-full">
-      <button
-        className="border border-gray-500 p-2 rounded-xl"
-        onClick={async () => await signOutAction()}
-      >
-        Signout
-      </button>
-    </div>
+    <nav className="flex justify-between items-center py-2 px-5 fixed top-0 z-50 w-full border-b border-black border-opacity-10">
+      <section>
+        <header className="font-bold text-2xl">AutoMate</header>
+      </section>
+      <section>
+        <Button variant={"ghost"} onClick={() => router.push("/signin")}>
+          Login
+        </Button>
+        <Button className="bg-primary text-white rounded-full font-semibold hover:shadow-md">
+          Signup
+        </Button>
+      </section>
+    </nav>
   );
 }

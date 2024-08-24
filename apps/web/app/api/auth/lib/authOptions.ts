@@ -5,7 +5,7 @@ import prisma from "@repo/db/client";
 import { JWT } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { signinSchema } from "@repo/schemas/signin";
+import { emailSchema, passwordSchema } from "@repo/schemas/credentials";
 
 export const authOptions: NextAuthConfig = {
   providers: [
@@ -29,10 +29,15 @@ export const authOptions: NextAuthConfig = {
           return null;
         }
 
-        const validation = signinSchema.safeParse(credentials);
+        const emailValidation = emailSchema.safeParse(credentials.email);
+        const passwordValidation = passwordSchema.safeParse(credentials.password);
 
-        if (!validation.success) {
-          throw new Error(validation.error.issues.map((issue) => issue.message).toString());
+        if (!emailValidation.success) {
+          throw new Error(emailValidation.error.issues.map((issue) => issue.message).toString());
+        }
+
+        if (!passwordValidation.success) {
+          throw new Error(passwordValidation.error.issues.map((issue) => issue.message).toString());
         }
 
         try {
